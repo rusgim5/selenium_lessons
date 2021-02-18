@@ -46,4 +46,9 @@ public class TestBase {
     void click(By locator) {
         wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(locator))).click();
     }
+    void type(By locator, String value) {
+        driver.findElement(locator).click();
+        driver.findElement(locator).clear();
+        driver.findElement(locator).sendKeys(value);
+    }
 }
