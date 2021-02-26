@@ -56,7 +56,6 @@ public class TestBase {
         tlDriver.set(wd);
         System.out.println(((HasCapabilities) wd).getCapabilities());
         wait = new WebDriverWait(wd, 10);
-
 //        Runtime.getRuntime().addShutdownHook(
 //                new Thread(() -> {
 //                    driver.quit();
@@ -97,10 +96,14 @@ public class TestBase {
     }
 
     protected void login() {
-        wd.navigate().to("http://localhost/litecart/admin");
+        if (isElementPresent(By.className("fa-sign-out"))) return;
+        goTo("http://localhost/litecart/admin");
         type(By.name("username"), "admin");
         type(By.name("password"), "admin");
         click(By.name("login"));
+    }
+    protected void goTo(String url) {
+        wd.get(url);
     }
 
 }

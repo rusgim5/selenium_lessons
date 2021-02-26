@@ -1,10 +1,13 @@
 package org.example;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
 public class MyFirstTest extends TestBase {
@@ -37,9 +40,18 @@ public class MyFirstTest extends TestBase {
                 for (int j = 1; j <= subDocCount; j++) {
                     WebElement doc = wd.findElement(By.cssSelector("li[id*=doc]:nth-child(" + j + ")"));
                     doc.click();
-                    Assert.assertTrue("Header not found", isElementPresent(By.cssSelector("h1")));
+                    assertTrue("Header not found", isElementPresent(By.cssSelector("h1")));
                 }
             }
+        }
+    }
+
+    @Test
+    public void testStickers() {
+        goTo("http://localhost/litecart/en/");
+        List<WebElement> products = wd.findElements(By.className("product"));
+        for (WebElement product : products) {
+            assertEquals(1, product.findElements(By.className("sticker")).size());
         }
     }
 
