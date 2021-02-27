@@ -56,11 +56,11 @@ public class TestBase {
         tlDriver.set(wd);
         System.out.println(((HasCapabilities) wd).getCapabilities());
         wait = new WebDriverWait(wd, 10);
-//        Runtime.getRuntime().addShutdownHook(
-//                new Thread(() -> {
-//                    driver.quit();
-//                    driver = null;
-//                }));
+        Runtime.getRuntime().addShutdownHook(
+                new Thread(() -> {
+                    wd.quit();
+                    wd = null;
+                }));
     }
 
     @After

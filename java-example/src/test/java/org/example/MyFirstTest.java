@@ -69,7 +69,6 @@ public class MyFirstTest extends TestBase {
             WebElement country = wd.findElement(By.cssSelector("[name=countries_form] tr:nth-child(" + i + ")"));
             if (Integer.parseInt(country.findElement(By.cssSelector("td:nth-of-type(6)")).getText())>0){
                 country.findElement(By.cssSelector("[title=Edit]")).click();
-                Thread.sleep(2000);
                 List<WebElement> zones = wd.findElements(By.cssSelector("table#table-zones tr td:nth-of-type(3)"));
                 assertTrue(checkAlphabeticalOrder(zones));
                 goTo("http://localhost/litecart/admin/?app=countries&doc=countries");
