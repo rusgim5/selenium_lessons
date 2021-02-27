@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -54,5 +55,40 @@ public class MyFirstTest extends TestBase {
             assertEquals(1, product.findElements(By.className("sticker")).size());
         }
     }
+
+    @Test
+    public void testAlphabetOrderCountries() throws InterruptedException {
+        login();
+        goTo("http://localhost/litecart/admin/?app=countries&doc=countries");
+
+        List<WebElement> countries = wd.findElements(By.cssSelector("[name=countries_form] tr td:nth-of-type(5)"));
+        assertTrue(checkAlphabeticalOrder(countries));
+
+        int countriesCount = countries.size();
+        for (int i = 2; i <= countriesCount; i++) {
+            WebElement country = wd.findElement(By.cssSelector("[name=countries_form] tr:nth-child(" + i + ")"));
+            if (Integer.parseInt(country.findElement(By.cssSelector("td:nth-of-type(6)")).getText())>0){
+                country.findElement(By.cssSelector("[title=Edit]")).click();
+                Thread.sleep(2000);
+                List<WebElement> zones = wd.findElements(By.cssSelector("table#table-zones tr td:nth-of-type(3)"));
+                assertTrue(checkAlphabeticalOrder(zones));
+                goTo("http://localhost/litecart/admin/?app=countries&doc=countries");
+            }
+        }
+
+    }
+
+    public boolean checkAlphabeticalOrder(List<WebElement> list) {
+        String previous = ""; // empty string: guaranteed to be less than or equal to any other
+        for (final WebElement current : list) {
+            if (current.getText().equals("")) continue;
+            if (previous.compareTo(current.getText()) > 0) {
+                return false;
+            }
+            previous = current.getText();
+        }
+        return true;
+    }
+
 
 }

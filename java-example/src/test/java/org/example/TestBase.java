@@ -96,8 +96,8 @@ public class TestBase {
     }
 
     protected void login() {
-        if (isElementPresent(By.className("fa-sign-out"))) return;
         goTo("http://localhost/litecart/admin");
+        if (isElementPresent(By.className("fa-sign-out"))) return;
         type(By.name("username"), "admin");
         type(By.name("password"), "admin");
         click(By.name("login"));
