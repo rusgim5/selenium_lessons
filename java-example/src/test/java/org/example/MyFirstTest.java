@@ -89,9 +89,9 @@ public class MyFirstTest extends TestBase {
         Product product = getProduct(webProduct);
         Product productDetails = product.getProductDetails();
 
-        VisualProperties regularPriceVisualTemplate = new VisualProperties().withColor("rgb(119, 119, 119)");
-        VisualProperties campaignPriceVisualTemplate = new VisualProperties().withColor("rgb(204, 0, 0)");
-        VisualProperties detailRegularPriceVisualTemplate = new VisualProperties().withColor("rgb(102, 102, 102)");
+        VisualProperties regularPriceVisualTemplate = new VisualProperties().withColor(Color.fromString("rgb(119, 119, 119)"));
+        VisualProperties campaignPriceVisualTemplate = new VisualProperties().withColor(Color.fromString("rgb(204, 0, 0)"));
+        VisualProperties detailRegularPriceVisualTemplate = new VisualProperties().withColor(Color.fromString("rgb(102, 102, 102)"));
 
 //        Проверяем, что продукты во всем одинаковые кроме оформления
         assertEquals("Продукт и его детали не равны", product, productDetails);
@@ -130,11 +130,11 @@ public class MyFirstTest extends TestBase {
                 .withRegularPrice(regularPrice.getText())
                 .withVisualPropRegularPrice(new VisualProperties()
                         .withFontSize(regularPrice.getCssValue("font-size"))
-                        .withColor(regularPrice.getCssValue("color")))
+                        .withColor(Color.fromString(regularPrice.getCssValue("color"))))
                 .withCampaignPrice(campaignPrice.getText())
                 .withVisualPropCampaignPrice(new VisualProperties()
                         .withFontSize(campaignPrice.getCssValue("font-size"))
-                        .withColor(campaignPrice.getCssValue("color")));
+                        .withColor(Color.fromString(campaignPrice.getCssValue("color"))));
     }
 
 }
