@@ -2,10 +2,7 @@ package org.example;
 
 import org.junit.After;
 import org.junit.Before;
-import org.openqa.selenium.By;
-import org.openqa.selenium.HasCapabilities;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -14,6 +11,8 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.List;
 
 import static org.example.TestBase.BrowserType.*;
 
@@ -106,4 +105,15 @@ public class TestBase {
         wd.get(url);
     }
 
+    public boolean checkAlphabeticalOrder(List<WebElement> list) {
+        String previous = ""; // empty string: guaranteed to be less than or equal to any other
+        for (final WebElement current : list) {
+            if (current.getText().equals("")) continue;
+            if (previous.compareTo(current.getText()) > 0) {
+                return false;
+            }
+            previous = current.getText();
+        }
+        return true;
+    }
 }
