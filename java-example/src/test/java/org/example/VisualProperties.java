@@ -1,27 +1,30 @@
 package org.example;
 
+import org.openqa.selenium.support.Color;
+
+import java.awt.*;
 import java.util.Objects;
 
 public class VisualProperties {
-    String color;
-    String backgroundColor;
+    Color color;
+    Color backgroundColor;
     Float fontSize;
 
 
-    public String getColor() {
+    public Color getColor() {
         return color;
     }
 
-    public VisualProperties withColor(String color) {
+    public VisualProperties withColor(Color color) {
         this.color = color;
         return this;
     }
 
-    public String getBackgroundColor() {
+    public Color getBackgroundColor() {
         return backgroundColor;
     }
 
-    public VisualProperties withBackgroundColor(String backgroundColor) {
+    public VisualProperties withBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
         return this;
     }
