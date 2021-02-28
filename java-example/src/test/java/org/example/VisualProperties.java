@@ -15,8 +15,8 @@ public class VisualProperties {
         return color;
     }
 
-    public VisualProperties withColor(Color color) {
-        this.color = color;
+    public VisualProperties withColor(String color) {
+        this.color = Color.fromString(color);
         return this;
     }
 
