@@ -30,7 +30,7 @@ public class TestBase {
             wait = new WebDriverWait(wd, 10);
             return;
         }
-        browserType = IE;
+        browserType = CHROME;
 
         if (browserType.equals(CHROME)) {
             ChromeOptions chromeOptions = new ChromeOptions();
@@ -53,13 +53,13 @@ public class TestBase {
         }
 
         tlDriver.set(wd);
-        System.out.println(((HasCapabilities) wd).getCapabilities());
+//        System.out.println(((HasCapabilities) wd).getCapabilities());
         wait = new WebDriverWait(wd, 10);
-        Runtime.getRuntime().addShutdownHook(
-                new Thread(() -> {
-                    wd.quit();
-                    wd = null;
-                }));
+//        Runtime.getRuntime().addShutdownHook(
+//                new Thread(() -> {
+//                    wd.quit();
+//                    wd = null;
+//                }));
     }
 
     @After

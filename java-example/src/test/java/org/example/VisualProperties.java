@@ -2,14 +2,22 @@ package org.example;
 
 import org.openqa.selenium.support.Color;
 
-import java.awt.*;
 import java.util.Objects;
 
 public class VisualProperties {
     Color color;
     Color backgroundColor;
     Float fontSize;
+    String textDecoration;
 
+    public String getTextDecoration() {
+        return textDecoration;
+    }
+
+    public VisualProperties withTextDecoration(String textDecoration) {
+        this.textDecoration = textDecoration;
+        return this;
+    }
 
     public Color getColor() {
         return color;

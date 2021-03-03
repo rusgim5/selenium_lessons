@@ -7,7 +7,6 @@ import org.openqa.selenium.support.Color;
 
 import java.util.List;
 
-import static org.example.TestBase.BrowserType.IE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
@@ -89,25 +88,30 @@ public class MyFirstTest extends TestBase {
         Product product = getProduct(webProduct);
         Product productDetails = product.getProductDetails();
 
-        VisualProperties regularPriceVisualTemplate = new VisualProperties().withColor("rgb(119, 119, 119)");
-        VisualProperties campaignPriceVisualTemplate = new VisualProperties().withColor("rgb(204, 0, 0)");
-        VisualProperties detailRegularPriceVisualTemplate = new VisualProperties().withColor("rgb(102, 102, 102)");
 
 //        Проверяем, что продукты во всем одинаковые кроме оформления
         assertEquals("Продукт и его детали не равны", product, productDetails);
 //        Проверяем оформление продукта на главной странице
-        assertEquals("На главной странице. Неверная визуализация обычной цены", regularPriceVisualTemplate, product.getPriceVisualProperties().getPropRegularPrice());
-        assertEquals("На главной странице. Неверная визуализация акционной цены", campaignPriceVisualTemplate, product.getPriceVisualProperties().getPropCampaignPrice());
-        assertTrue("На главной странице. Размер шрифта аукционной цены меньше размера обычной цены",
+        assertTrue(isGray(product.getPriceVisualProperties().getPropRegularPrice().getColor()));
+        assertTrue(isRed(product.getPriceVisualProperties().getPropCampaignPrice().getColor()));
+        assertTrue("На главной станице. Размер шрифта аукционной цены меньше размера обычной цены",
                 product.getPriceVisualProperties().getPropCampaignPrice().getFontSize() >
                         product.getPriceVisualProperties().getPropRegularPrice().getFontSize());
 
 //        Проверяем оформление детализации продукта
-        assertEquals("На станице с детализацией продукта. Неверная визуализация обычной цены", detailRegularPriceVisualTemplate, productDetails.getPriceVisualProperties().getPropRegularPrice());
-        assertEquals("На станице с детализацией продукта. Неверная визуализация акционной цены", campaignPriceVisualTemplate, productDetails.getPriceVisualProperties().getPropCampaignPrice());
+        assertTrue(isGray(productDetails.getPriceVisualProperties().getPropRegularPrice().getColor()));
+        assertTrue(isRed(productDetails.getPriceVisualProperties().getPropCampaignPrice().getColor()));
         assertTrue("На станице с детализацией продукта. Размер шрифта аукционной цены меньше размера обычной цены",
                 product.getPriceVisualProperties().getPropCampaignPrice().getFontSize() >
                         product.getPriceVisualProperties().getPropRegularPrice().getFontSize());
+    }
+
+    private boolean isGray(Color color) {
+        return color.getColor().getGreen() == color.getColor().getRed() && color.getColor().getRed() == color.getColor().getBlue();
+    }
+
+    private boolean isRed(Color color) {
+        return color.getColor().getRed() > 0 && color.getColor().getBlue() == 0 && color.getColor().getGreen() == 0;
     }
 
 
@@ -129,12 +133,15 @@ public class MyFirstTest extends TestBase {
         return new PriceVisualProperties()
                 .withRegularPrice(regularPrice.getText())
                 .withVisualPropRegularPrice(new VisualProperties()
+                        .withTextDecoration(regularPrice.getCssValue("text-decoration"))
                         .withFontSize(regularPrice.getCssValue("font-size"))
                         .withColor(regularPrice.getCssValue("color")))
                 .withCampaignPrice(campaignPrice.getText())
                 .withVisualPropCampaignPrice(new VisualProperties()
+                        .withTextDecoration(campaignPrice.getCssValue("text-decoration"))
                         .withFontSize(campaignPrice.getCssValue("font-size"))
                         .withColor(campaignPrice.getCssValue("color")));
+
     }
 
 }
