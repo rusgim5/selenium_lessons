@@ -2,7 +2,9 @@ package org.example;
 
 import org.junit.After;
 import org.junit.Before;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -45,7 +47,7 @@ public class TestBase {
             internetExplorerOptions.setCapability("marionette", true);
 //            internetExplorerOptions.setCapability("logLevel", "DEBUG");
             wd = new InternetExplorerDriver(internetExplorerOptions);
-        }else if (browserType.equals(FIREFOX_NIGHTLY)) {
+        } else if (browserType.equals(FIREFOX_NIGHTLY)) {
             FirefoxOptions firefoxOptions = new FirefoxOptions();
             firefoxOptions.setBinary("C:/Program Files/Firefox Nightly/firefox.exe");
             firefoxOptions.setCapability("marionette", true);
@@ -87,13 +89,6 @@ public class TestBase {
         }
     }
 
-    enum BrowserType {
-        CHROME,
-        FIREFOX,
-        IE,
-        FIREFOX_NIGHTLY,
-    }
-
     protected void login() {
         goTo("http://localhost/litecart/admin");
         if (isElementPresent(By.className("fa-sign-out"))) return;
@@ -101,19 +96,27 @@ public class TestBase {
         type(By.name("password"), "admin");
         click(By.name("login"));
     }
+
     protected void goTo(String url) {
         wd.get(url);
     }
 
-    public boolean checkAlphabeticalOrder(List<WebElement> list) {
+    public boolean checkAlphabeticalOrder(List<String> list) {
         String previous = ""; // empty string: guaranteed to be less than or equal to any other
-        for (final WebElement current : list) {
-            if (current.getText().equals("")) continue;
-            if (previous.compareTo(current.getText()) > 0) {
+        for (final String current : list) {
+            if (current.equals("")) continue;
+            if (previous.compareTo(current) > 0) {
                 return false;
             }
-            previous = current.getText();
+            previous = current;
         }
         return true;
+    }
+
+    enum BrowserType {
+        CHROME,
+        FIREFOX,
+        IE,
+        FIREFOX_NIGHTLY,
     }
 }
