@@ -2,9 +2,7 @@ package org.example;
 
 import org.junit.After;
 import org.junit.Before;
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -12,9 +10,13 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static org.example.TestBase.BrowserType.*;
 
@@ -54,9 +56,10 @@ public class TestBase {
             wd = new FirefoxDriver(firefoxOptions);
         }
 
+        wd.manage().window().maximize();
+        wd.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
         tlDriver.set(wd);
-//        System.out.println(((HasCapabilities) wd).getCapabilities());
-        wait = new WebDriverWait(wd, 10);
+        wait = new WebDriverWait(wd, 3);
 //        Runtime.getRuntime().addShutdownHook(
 //                new Thread(() -> {
 //                    wd.quit();
@@ -70,14 +73,23 @@ public class TestBase {
         //driver = null;
     }
 
+    public BrowserType getBrowserType() {
+        return browserType;
+    }
+
+    public void setBrowserType(BrowserType browserType) {
+        this.browserType = browserType;
+    }
+
     void click(By locator) {
         wait.until(ExpectedConditions.elementToBeClickable(wd.findElement(locator))).click();
     }
 
     void type(By locator, String value) {
-        wd.findElement(locator).click();
-        wd.findElement(locator).clear();
-        wd.findElement(locator).sendKeys(value);
+        WebElement element = wd.findElement(locator);
+        wait.until(ExpectedConditions.elementToBeClickable(element)).click();
+        element.clear();
+        element.sendKeys(value);
     }
 
     protected Boolean isElementPresent(By locator) {
@@ -113,10 +125,50 @@ public class TestBase {
         return true;
     }
 
+    protected void selectedByContentText(WebElement select, String contentText) {
+        if (getBrowserType().equals(FIREFOX)) {
+            ((JavascriptExecutor) wd).executeScript("var options = arguments[0].options;" +
+                    "for (var i = 0, optionsLength = options.length; i < optionsLength; i++) {" +
+                    "if (options[i].textContent == arguments[1]) {" +
+                    "  arguments[0].selectedIndex = i; break;" +
+                    "}" +
+                    "}" +
+                    "arguments[0].dispatchEvent(new Event('change'));", select, contentText);
+        } else {
+            Select select1 = new Select(select);
+            select1.selectByVisibleText(contentText);
+        }
+    }
+
+    protected void selectedByIndex(WebElement select, int index) {
+        if (getBrowserType().equals(FIREFOX)) {
+            ((JavascriptExecutor) wd).executeScript("arguments[0].selectedIndex = arguments[1];" +
+                    "arguments[0].dispatchEvent(new Event('change'));", select,index);
+        } else {
+            Select select1 = new Select(select);
+            select1.selectByIndex(index);
+        }
+    }
+
     enum BrowserType {
         CHROME,
         FIREFOX,
         IE,
         FIREFOX_NIGHTLY,
+    }
+    public static String randomString(int length) {
+        return randomStr(length,"qwertyuiopasdfghjklzxcvbnm");
+    }
+
+    public static String randomNumber(int length) {
+        return randomStr(length,"1234567890");
+    }
+
+    private static String randomStr(int length, String symbols) {
+        String random = new Random().ints(length, 0, symbols.length())
+                .mapToObj(symbols::charAt)
+                .map(Object::toString)
+                .collect(Collectors.joining());
+        return random;
     }
 }
