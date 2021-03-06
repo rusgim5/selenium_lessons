@@ -34,7 +34,7 @@ public class TestBase {
             wait = new WebDriverWait(wd, 10);
             return;
         }
-        browserType = IE;
+        browserType = CHROME;
 
         if (browserType.equals(CHROME)) {
             ChromeOptions chromeOptions = new ChromeOptions();
