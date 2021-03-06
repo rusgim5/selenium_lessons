@@ -42,7 +42,7 @@ public class ProductTests extends TestBase {
         final String code = randomNumber(5);
         final int quantity = new Random().nextInt(100);
         final String shortDescription = "Детский зеленый велосипед";
-        final String filePath = System.getProperty("user.dir") + "/src/test/resources/product1.jpg";
+        final String filePath = System.getProperty("user.dir") + "\\src\\test\\resources\\product1.jpg";
         final String description = "Детский велосипед"+ Keys.RETURN+"Зеленого цвета";
         final String price = new Random().nextInt(100)+",0";
 
