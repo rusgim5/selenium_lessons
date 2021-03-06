@@ -2,11 +2,13 @@ package org.example;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.Color;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.util.Random;
+
+import static org.junit.Assert.*;
 
 public class ProductTests extends TestBase {
 
@@ -16,11 +18,8 @@ public class ProductTests extends TestBase {
 
         WebElement webCategory = wd.findElement(By.xpath("//div[./h3[text()='Campaigns']]"));
         WebElement webProduct = webCategory.findElement(By.cssSelector("li[class*=product]"));
-
         Product product = getProduct(webProduct);
         Product productDetails = product.getProductDetails();
-
-
 //        Проверяем, что продукты во всем одинаковые кроме оформления
         assertEquals("Продукт и его детали не равны", product, productDetails);
 //        Проверяем оформление продукта на главной странице
@@ -29,13 +28,51 @@ public class ProductTests extends TestBase {
         assertTrue("На главной станице. Размер шрифта аукционной цены меньше размера обычной цены",
                 product.getPriceVisualProperties().getPropCampaignPrice().getFontSize() >
                         product.getPriceVisualProperties().getPropRegularPrice().getFontSize());
-
 //        Проверяем оформление детализации продукта
         assertTrue(isGray(productDetails.getPriceVisualProperties().getPropRegularPrice().getColor()));
         assertTrue(isRed(productDetails.getPriceVisualProperties().getPropCampaignPrice().getColor()));
         assertTrue("На станице с детализацией продукта. Размер шрифта аукционной цены меньше размера обычной цены",
                 product.getPriceVisualProperties().getPropCampaignPrice().getFontSize() >
                         product.getPriceVisualProperties().getPropRegularPrice().getFontSize());
+    }
+
+    @Test
+    public void testAddNewProduct() {
+        final String name = "velocity"+randomString(4);
+        final String code = randomNumber(5);
+        final int quantity = new Random().nextInt(100);
+        final String shortDescription = "Детский зеленый велосипед";
+        final String filePath = System.getProperty("user.dir") + "/src/test/resources/product1.jpg";
+        final String description = "Детский велосипед"+ Keys.RETURN+"Зеленого цвета";
+        final String price = new Random().nextInt(100)+",0";
+
+        login();
+        click(By.xpath("//ul[@id='box-apps-menu']//span[text()='Catalog']"));
+        click(By.xpath("//a[contains(text(),' Add New Product')]"));
+        click(By.xpath("//label[text()=' Enabled']//input"));
+        type(By.cssSelector("input[name*=name]"), name);
+        type(By.cssSelector("input[name=code]"), code);
+        click(By.xpath("//tr[./td[text()='Unisex']]//input"));
+        type(By.cssSelector("input[name=quantity]"), quantity);
+        wd.findElement(By.cssSelector("input[type=file]")).sendKeys(filePath);
+        click(By.cssSelector("a[href*=tab-information]"));
+        sleep(1000);
+        selectedByIndex(wd.findElement(By.cssSelector("select[name=manufacturer_id]")),1);
+        type(By.cssSelector("input[name=keywords]"), name);
+        type(By.cssSelector("input[name*=short_description]"), shortDescription);
+        type(By.cssSelector("div.trumbowyg-editor"), description);
+        type(By.cssSelector("input[name*=head_title]"), shortDescription);
+        type(By.cssSelector("input[name*=meta_description]"), shortDescription);
+        click(By.cssSelector("a[href*=tab-prices"));
+        sleep(1000);
+        type(By.cssSelector("input[name=purchase_price]"), price);
+        selectedByIndex(wd.findElement(By.cssSelector("select[name=purchase_price_currency_code]")),1);
+        type(By.cssSelector("input[name='prices[USD]']"), price);
+        type(By.cssSelector("input[name='gross_prices[USD]']"), 20);
+        type(By.cssSelector("input[name='prices[EUR]']"), price);
+        type(By.cssSelector("input[name='gross_prices[EUR]']"), 20);
+        click(By.cssSelector("button[name=save]"));
+        assertTrue(isElementPresent(By.xpath("//a[text()='"+name+"']")));
     }
 
     private boolean isGray(Color color) {
@@ -75,5 +112,6 @@ public class ProductTests extends TestBase {
                         .withColor(campaignPrice.getCssValue("color")));
 
     }
+
 
 }

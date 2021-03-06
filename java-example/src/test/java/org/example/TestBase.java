@@ -82,10 +82,22 @@ public class TestBase {
     }
 
     void click(By locator) {
+        sleep(500);
         wait.until(ExpectedConditions.elementToBeClickable(wd.findElement(locator))).click();
     }
 
+    protected void sleep(int time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    void type(By locator, double value) {
+        type(locator,String.valueOf(value));
+    }
     void type(By locator, String value) {
+        sleep(500);
         WebElement element = wd.findElement(locator);
         wait.until(ExpectedConditions.elementToBeClickable(element)).click();
         element.clear();
