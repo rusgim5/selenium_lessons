@@ -85,6 +85,10 @@ public class TestBase {
         sleep(500);
         wait.until(ExpectedConditions.elementToBeClickable(wd.findElement(locator))).click();
     }
+    void click(WebElement webElement) {
+        sleep(500);
+        wait.until(ExpectedConditions.elementToBeClickable(webElement)).click();
+    }
 
     protected void sleep(int time) {
         try {
@@ -112,7 +116,13 @@ public class TestBase {
             return false;
         }
     }
-
+    protected WebElement returnIsElementPresent(By locator) {
+        try {
+            return  wait.until((WebDriver wd) -> wd.findElement(locator));
+        } catch (TimeoutException ex) {
+            return null;
+        }
+    }
     protected void login() {
         goTo("http://localhost/litecart/admin");
         if (isElementPresent(By.className("fa-sign-out"))) return;

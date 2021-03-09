@@ -6,9 +6,13 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.Color;
 
+import java.util.List;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.support.ui.ExpectedConditions.attributeContains;
+import static org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf;
 
 public class ProductTests extends TestBase {
 
@@ -38,13 +42,13 @@ public class ProductTests extends TestBase {
 
     @Test
     public void testAddNewProduct() {
-        final String name = "velocity"+randomString(4);
+        final String name = "velocity" + randomString(4);
         final String code = randomNumber(5);
         final int quantity = new Random().nextInt(100);
         final String shortDescription = "Детский зеленый велосипед";
         final String filePath = System.getProperty("user.dir") + "\\src\\test\\resources\\product1.jpg";
-        final String description = "Детский велосипед"+ Keys.RETURN+"Зеленого цвета";
-        final String price = new Random().nextInt(100)+",0";
+        final String description = "Детский велосипед" + Keys.RETURN + "Зеленого цвета";
+        final String price = new Random().nextInt(100) + ",0";
 
         login();
         click(By.xpath("//ul[@id='box-apps-menu']//span[text()='Catalog']"));
@@ -57,7 +61,7 @@ public class ProductTests extends TestBase {
         wd.findElement(By.cssSelector("input[type=file]")).sendKeys(filePath);
         click(By.cssSelector("a[href*=tab-information]"));
         sleep(1000);
-        selectedByIndex(wd.findElement(By.cssSelector("select[name=manufacturer_id]")),1);
+        selectedByIndex(wd.findElement(By.cssSelector("select[name=manufacturer_id]")), 1);
         type(By.cssSelector("input[name=keywords]"), name);
         type(By.cssSelector("input[name*=short_description]"), shortDescription);
         type(By.cssSelector("div.trumbowyg-editor"), description);
@@ -66,13 +70,41 @@ public class ProductTests extends TestBase {
         click(By.cssSelector("a[href*=tab-prices"));
         sleep(1000);
         type(By.cssSelector("input[name=purchase_price]"), price);
-        selectedByIndex(wd.findElement(By.cssSelector("select[name=purchase_price_currency_code]")),1);
+        selectedByIndex(wd.findElement(By.cssSelector("select[name=purchase_price_currency_code]")), 1);
         type(By.cssSelector("input[name='prices[USD]']"), price);
         type(By.cssSelector("input[name='gross_prices[USD]']"), 20);
         type(By.cssSelector("input[name='prices[EUR]']"), price);
         type(By.cssSelector("input[name='gross_prices[EUR]']"), 20);
         click(By.cssSelector("button[name=save]"));
-        assertTrue(isElementPresent(By.xpath("//a[text()='"+name+"']")));
+        assertTrue(isElementPresent(By.xpath("//a[text()='" + name + "']")));
+    }
+
+    @Test
+    public void testAddToCardAndDeleteAllGoodFromCard() {
+//        Добавляем 3 товара в корзину
+        for (int i = 0; i < 3; i++) {
+            goTo("http://localhost/litecart/en/");
+            WebElement product = wd.findElement(By.cssSelector("li.product"));
+            click(product);
+            WebElement size = returnIsElementPresent(By.cssSelector("select[name='options[Size]']"));
+            if (size != null) {
+                selectedByIndex(size, new Random().ints(2, size.findElements(By.cssSelector("option")).size() - 1).findFirst().getAsInt());
+            }
+            WebElement card = wd.findElement(By.cssSelector("span.quantity"));
+            int count = Integer.parseInt(card.getAttribute("textContent"));
+            click(By.cssSelector("button[name=add_cart_product]"));
+            wait.until(attributeContains(card, "textContent", String.valueOf(count + 1)));
+        }
+//        Удаляем все товары из корзины
+        click(By.xpath("//a[@class='link' and text()='Checkout »']"));
+        List<WebElement> shotCuts = wd.findElements(By.cssSelector("li.shortcut"));
+        for (int i = 1; i < shotCuts.size() + 1; i++) {
+            WebElement table = wd.findElement(By.cssSelector("table.dataTable"));
+            click(By.cssSelector("button[name=remove_cart_item]"));
+            wait.until(stalenessOf(table));
+        }
+
+
     }
 
     private boolean isGray(Color color) {
