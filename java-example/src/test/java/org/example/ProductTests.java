@@ -80,7 +80,7 @@ public class ProductTests extends TestBase {
     }
 
     @Test
-    public void testAddToCardAndDeleteAllGoodFromCard() {
+    public void testAddToCardAndDeleteAllGoodsFromCard() {
 //        Добавляем 3 товара в корзину
         for (int i = 0; i < 3; i++) {
             goTo("http://localhost/litecart/en/");

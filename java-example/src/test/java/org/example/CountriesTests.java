@@ -1,15 +1,20 @@
 package org.example;
 
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertTrue;
 
-public class CountryTests extends TestBase{
+public class CountriesTests extends TestBase{
 
     @Test
     public void testAlphabetOrderCountries() throws InterruptedException {
@@ -47,4 +52,33 @@ public class CountryTests extends TestBase{
 
     }
 
+    @Test
+    public void testSwitchWindow() {
+        login();
+        goTo("http://localhost/litecart/admin/?app=countries&doc=countries");
+        String mainWindow = wd.getWindowHandle();
+        Set<String> oldWindows = wd.getWindowHandles();
+        click(By.cssSelector("a.button[href*=edit_country]"));
+        List<WebElement> externalLinkFields = wd.findElements(By.cssSelector("a[target='_blank']"));
+        for (WebElement externalLinkField :externalLinkFields) {
+            click(externalLinkField);
+            String newWindow = wait.until(thereIsWindowOtherThan(oldWindows));
+            wd.switchTo().window(newWindow);
+            sleep(1000);
+            wd.close();
+            wd.switchTo().window(mainWindow);
+        }
+    }
+
+    private ExpectedCondition<String> thereIsWindowOtherThan(Set<String> oldWindows) {
+        return new ExpectedCondition<String>() {
+            @NullableDecl
+            @Override
+            public String apply(@NullableDecl WebDriver input) {
+                Set<String> handles=wd.getWindowHandles();
+                handles.removeAll(oldWindows);
+                return handles.size()>0?handles.iterator().next():null;
+            }
+        };
+    }
 }
