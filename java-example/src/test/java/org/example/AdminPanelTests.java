@@ -1,5 +1,6 @@
 package org.example;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -20,7 +21,7 @@ public class AdminPanelTests extends TestBase {
             WebElement product = wd.findElement(By.xpath("//tr[./td/a[contains(@href,'product_id') and not(@title)]]["+i+"]//a"));
             click(product);
             wait.until(ExpectedConditions.stalenessOf(h1));
-            wd.manage().logs().get("browser").getAll().forEach(l-> assertTrue(l.equals("")));
+            wd.manage().logs().get("browser").getAll().forEach(l-> assertThat(l, CoreMatchers.equalTo("")));
             goTo("http://localhost/litecart/admin/?app=catalog&doc=catalog&category_id=1");
         }
     }

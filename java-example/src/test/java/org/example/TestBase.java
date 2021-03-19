@@ -9,6 +9,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -34,11 +35,18 @@ public class TestBase {
             wait = new WebDriverWait(wd, 10);
             return;
         }
+
+        Proxy proxy = new Proxy();
+        proxy.setHttpProxy("localhost:8888");
+//        DesiredCapabilities caps = new DesiredCapabilities();
+//        caps.setCapability("proxy", proxy);
+
         browserType = CHROME;
 
         if (browserType.equals(CHROME)) {
             ChromeOptions chromeOptions = new ChromeOptions();
             chromeOptions.setCapability("marionette", true);
+//            chromeOptions.setCapability("proxy", proxy);
             wd = new ChromeDriver(chromeOptions);
         } else if (browserType.equals(FIREFOX)) {
             FirefoxOptions firefoxOptions = new FirefoxOptions();
