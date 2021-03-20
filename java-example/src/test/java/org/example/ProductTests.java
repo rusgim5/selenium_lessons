@@ -15,7 +15,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.attributeContain
 public class ProductTests extends TestBase {
 
     @Test
-    public void testAddToCardAndDeleteAllGoodsFromCard() {
+    public void testAddToCartAndDeleteAllGoodsFromCart() {
         for (int i = 0; i < 3; i++) {
             app.mainPage().selectAnyProduct();
             app.productPage().addToCart();
