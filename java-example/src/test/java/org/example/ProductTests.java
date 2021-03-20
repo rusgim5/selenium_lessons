@@ -17,7 +17,7 @@ public class ProductTests extends TestBase {
     @Test
     public void testAddToCardAndDeleteAllGoodsFromCard() {
         for (int i = 0; i < 3; i++) {
-            app.mainPage().selectProduct();
+            app.mainPage().selectAnyProduct();
             app.productPage().addToCart();
         }
         app.cartPage().clearCart();

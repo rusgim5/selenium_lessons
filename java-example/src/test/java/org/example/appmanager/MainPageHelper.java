@@ -10,7 +10,7 @@ public class MainPageHelper extends HelperBase {
         super(app, wd, wait);
     }
 
-    public void selectProduct() {
+    public void selectAnyProduct() {
         app.goTo().mainPage();
         WebElement product = wd.findElement(By.cssSelector("li.product"));
         click(product);
