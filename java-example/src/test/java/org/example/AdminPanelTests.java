@@ -13,16 +13,16 @@ import static org.junit.Assert.*;
 public class AdminPanelTests extends TestBase {
     @Test
     public void testLogs() {
-        login();
-        goTo("http://localhost/litecart/admin/?app=catalog&doc=catalog&category_id=1");
+        app.session().login();
+        app.goTo().catalogPage();
         int productCount = wd.findElements(By.xpath("//tr[./td/a[contains(@href,'product_id') and not(@title)]]")).size();
         for (int i = 1; i < productCount; i++) {
             WebElement h1 = wd.findElement(By.tagName("h1"));
             WebElement product = wd.findElement(By.xpath("//tr[./td/a[contains(@href,'product_id') and not(@title)]]["+i+"]//a"));
-            click(product);
+            product.click();
             wait.until(ExpectedConditions.stalenessOf(h1));
             wd.manage().logs().get("browser").getAll().forEach(l-> assertThat(l, CoreMatchers.equalTo("")));
-            goTo("http://localhost/litecart/admin/?app=catalog&doc=catalog&category_id=1");
+            app.goTo().catalogPage();
         }
     }
 }
